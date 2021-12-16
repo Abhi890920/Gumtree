@@ -102,23 +102,6 @@
 		    select('#playPauseBtn').classList.remove('play')
 		  }
 	  })
-
-
-
-	// Fetch all the forms we want to apply custom Bootstrap validation styles to
-    var forms = document.querySelectorAll('.needs-validation')
-
-    // Loop over them and prevent submission
-    Array.prototype.slice.call(forms).forEach(function (form) {
-      form.addEventListener('submit', function (event) {
-        if (!form.checkValidity()) {
-          event.preventDefault()
-          event.stopPropagation()
-        }
-        form.classList.add('was-validated')
-      }, false)
-    })
-
   
   })();
 
@@ -145,7 +128,107 @@
 		uiValue.find('.val').text(ui.value);
 	}
 	let initialRange = $("#rangeSlider").find('.ui-slider-handle').css("left");
-	$("#rangeSlider").find('.highlight').width(initialRange)
+	$("#rangeSlider").find('.highlight').width(initialRange);
+	  
+	
+	// Start Form Validation
+
+	let userName =  $("#userName"),
+		userCheck = $("#userCheck"),
+		usernameError = true,
+		email =  $("#email"),
+		emailCheck = $("#emailCheck"),
+		emailError = true,
+		phoneNumber = $("#phoneNumber"),
+		phoneNumberCheck = $("#phoneNumberCheck"),
+		phoneNumberError = true;
+
+	userCheck.hide();
+	emailCheck.hide();
+	phoneNumberCheck.hide();
+
+	// on Key Press
+	userName.keyup(function () {
+		validateUsername();
+	});
+
+	email.keyup(function(){
+		validateEmail()
+	})
+
+    phoneNumber.keyup(function () {
+		validatePhoneNumber();
+	});
+
+	// Validate Username
+	function validateUsername() {
+		let usernameValue = userName.val();
+		if (usernameValue.length == "") {
+			userCheck.show();
+			usernameError = false;
+			userName.addClass("is-invalid");
+			return false;
+		} else if (usernameValue.length < 3 || usernameValue.length > 10) {
+			userCheck.show().html("Length of username must be between 3 and 10");
+			usernameError = false;
+			return false;
+		} else {
+			userCheck.hide();
+			userName.removeClass("is-invalid");
+		}
+	}
+
+	// Validate Email
+	function validateEmail(){
+		let regex = /^([_\-\.0-9a-zA-Z]+)@([_\-\.0-9a-zA-Z]+)\.([a-zA-Z]){2,7}$/;
+		let emailValue = email.val();
+
+		if (emailValue.length == "") {
+			email.addClass("is-invalid");
+			emailCheck.show();
+			emailError = true;
+			return false;
+		}else if (!regex.test(emailValue)) {
+			email.addClass("is-invalid");
+			emailCheck.show().html("Email must be a valid email");
+			emailError = true;
+			return false;
+		} else {
+			email.removeClass("is-invalid");
+			emailCheck.hide();
+			emailError = false;
+		}
+	}
+
+	// Validate Phone number
+	function validatePhoneNumber() {
+		let phoneNumberValue = phoneNumber.val();
+		if (phoneNumberValue.length == "") {
+			phoneNumberCheck.show();
+			phoneNumberError = false;
+			return false;
+		}else if ( phoneNumberValue.length > 10 || phoneNumberValue.length < 10) {
+			phoneNumberCheck.show().html("Your number must be 10 digit");
+			phoneNumberError = false;
+			return false;
+		} else {
+			phoneNumberCheck.hide();
+		}
+	}
+
+	// Submit button
+	$("#submitBtn").click(function () {
+
+		validateUsername();
+		validateEmail();
+		validatePhoneNumber();
+		
+		if (usernameError == true  && emailError == true && validatePhone == true ){
+			return true;
+		} else { 
+			return false;
+		}
+	});	  
 
 });
 
